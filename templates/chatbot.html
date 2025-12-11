@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <title>FAQ Chatbot</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Modern font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0; padding: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: #ece5dd;
       height: 100vh; display: flex; flex-direction: column;
     }
@@ -85,7 +87,7 @@
     <button id="homeButton" onclick="resetChat()">🏠 Home</button>
     <button id="darkModeToggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
   </div>
-  <footer>Built with ❤️ by Mohammed Arshad | CodeAlpha Project</footer>
+  <footer>© 2025 Arshad’s Restaurant | Powered by CodeAlpha Project</footer>
   <button id="helpButton" title="Need help?" onclick="showAllFAQs()">❓</button>
 
   <script>
@@ -103,8 +105,8 @@
         else if (category.includes("Payment")) { catClass = "Payments"; icon = "💳"; }
         else if (category.includes("Cancellation")) { catClass = "Cancellation"; icon = "❌"; }
         else if (category.includes("Delivery")) { catClass = "Delivery"; icon = "🚚"; }
-        else if (category.includes("Facility")) { catClass = "Facilities"; icon = "🏨"; }
-                else if (category.includes("Offer")) { catClass = "Offers"; icon = "🎁"; }
+                else if (category.includes("Facility")) { catClass = "Facilities"; icon = "🏨"; }
+        else if (category.includes("Offer")) { catClass = "Offers"; icon = "🎁"; }
 
         categoryHTML = `<span class="category ${catClass}" onclick="filterByCategory('${category}')">${icon} ${category}</span>`;
       }
@@ -154,7 +156,7 @@
     }
 
     function loadCategory(category) {
-      document.getElementById("categoryPanel").style.display = "none"; // hide category panel
+      document.getElementById("categoryPanel").style.display = "none"; 
       filterByCategory(category);
     }
 
@@ -222,8 +224,8 @@
 
     function resetChat() {
       const messages = document.getElementById("messages");
-      messages.innerHTML = ""; // clear all messages
-      document.getElementById("categoryPanel").style.display = "block"; // show category panel again
+      messages.innerHTML = ""; 
+      document.getElementById("categoryPanel").style.display = "block"; 
       addMessage("👋 Hi, please select a category to see FAQs.", "bot", "General");
     }
 
@@ -260,7 +262,7 @@
     }
 
     window.onload = () => {
-      addMessage("👋 Welcome! Please select a category to see FAQs.", "bot", "General");
+      addMessage("👋 Welcome to Arshad’s Restaurant Assistant! Please select a category to get started.", "bot", "General");
     };
   </script>
 </body>
