@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS
 from model import FAQMatcher, load_faqs
 
-app = Flask(__name__)
+# Tell Flask to look in the templates folder
+app = Flask(__name__, template_folder="templates")
 CORS(app)
 
 # Load FAQs from JSON
@@ -64,7 +65,7 @@ def feedback():
 @app.route("/chat")
 def chat():
     """Serve chatbot frontend (direct link)."""
-    return send_from_directory(".", "chatbot.html")
+    return send_from_directory("templates", "chatbot.html")
 
 @app.route("/")
 def home():
