@@ -20,7 +20,7 @@
       padding:12px;
       text-align:center;
       font-weight:bold;
-      position: fixed;   /* sticky header */
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -33,8 +33,8 @@
       height: 100vh;
       width: 100%;
       max-width: 100%;
-      margin-top: 50px;   /* push below header */
-      margin-bottom: 70px; /* extra space above footer */
+      margin-top: 50px;
+      padding-bottom: 80px; /* ensures content doesn't overlap footer */
       border-radius: 0;
       box-shadow: none;
       border: none;
@@ -95,7 +95,7 @@
     }
     #faqButton { background: #007bff; }
     #faqButton:hover { background: #0056b3; }
-    #homeButton { background: #6c757d; margin-bottom: 10px; } /* extra spacing */
+    #homeButton { background: #6c757d; margin-bottom: 10px; }
     #homeButton:hover { background: #5a6268; }
     .feedback { margin-top: 6px; }
     .feedback button {
@@ -111,7 +111,7 @@
     .message.bot span[onclick] { transition: color 0.2s ease; }
     .message.bot span[onclick]:hover { color: #0056b3; }
     footer {
-      position: fixed;   /* sticky footer */
+      position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
@@ -223,7 +223,7 @@
         const faqs = await res.json();
         addMessage("📋 Here are all available FAQs (click a question to see the answer):", "bot", "General");
 
-               faqs.forEach(faq => {
+                faqs.forEach(faq => {
           const msg = document.createElement("div");
           msg.className = "message bot";
           msg.innerHTML = `
