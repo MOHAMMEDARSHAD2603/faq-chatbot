@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS
 from model import FAQMatcher, load_faqs
 
@@ -22,10 +22,9 @@ def ask():
     if not question:
         return jsonify({"error": "question required"}), 400
 
-    # best_match returns (question, answer, category, score)
     best_q, best_a, best_cat, score = matcher.best_match(question)
 
-    if score < 0.15:  # threshold tuning
+    if score < 0.15:
         return jsonify({
             "answer": "❌ Sorry, I only answer questions from our FAQ list. "
                       "👉 Click 'View All FAQs' to see them.",
@@ -43,11 +42,7 @@ def ask():
 
 @app.route("/faqs", methods=["GET"])
 def get_faqs():
-    """
-    Return FAQs.
-    - If ?category= is provided → return filtered FAQs.
-    - If no category → return all FAQs.
-    """
+    """Return FAQs, optionally filtered by category."""
     category = request.args.get("category")
     if category:
         filtered = [faq for faq in faqs if category.lower() in faq["category"].lower()]
@@ -56,15 +51,11 @@ def get_faqs():
 
 @app.route("/feedback", methods=["POST"])
 def feedback():
-    """
-    Collect feedback from chatbot (Yes/No).
-    Stores feedback in a simple text file for now.
-    """
+    """Collect feedback and store in a log file."""
     data = request.get_json(force=True)
     feedback_value = data.get("feedback")
     answer_text = data.get("answer")
 
-    # Save feedback to a log file
     with open("feedback_log.txt", "a", encoding="utf-8") as f:
         f.write(f"{feedback_value} | {answer_text}\n")
 
@@ -72,9 +63,13 @@ def feedback():
 
 @app.route("/chat")
 def chat():
-    """Serve chatbot frontend."""
+    """Serve chatbot frontend (direct link)."""
     return send_from_directory(".", "chatbot.html")
 
+@app.route("/")
+def home():
+    """Serve chatbot frontend at root URL."""
+    return render_template("chatbot.html")
+
 if __name__ == "__main__":
-    # 0.0.0.0 exposes to LAN; change to 127.0.0.1 if you want local only
     app.run(host="0.0.0.0", port=5000)
