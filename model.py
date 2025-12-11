@@ -17,6 +17,11 @@ def ensure_nltk_resources():
         nltk.download("punkt")
 
     try:
+        nltk.data.find("tokenizers/punkt_tab")
+    except LookupError:
+        nltk.download("punkt_tab")
+
+    try:
         nltk.data.find("corpora/stopwords")
     except LookupError:
         nltk.download("stopwords")
@@ -26,6 +31,12 @@ def ensure_nltk_resources():
     except LookupError:
         nltk.download("wordnet")
 
+    try:
+        nltk.data.find("corpora/omw-1.4")
+    except LookupError:
+        nltk.download("omw-1.4")
+
+# Run setup once at import
 ensure_nltk_resources()
 
 STOPWORDS = set(stopwords.words("english"))
