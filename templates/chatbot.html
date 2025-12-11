@@ -34,7 +34,7 @@
       width: 100%;
       max-width: 100%;
       margin-top: 50px;   /* push below header */
-      margin-bottom: 40px; /* push above footer */
+      margin-bottom: 70px; /* extra space above footer */
       border-radius: 0;
       box-shadow: none;
       border: none;
@@ -95,7 +95,7 @@
     }
     #faqButton { background: #007bff; }
     #faqButton:hover { background: #0056b3; }
-    #homeButton { background: #6c757d; }
+    #homeButton { background: #6c757d; margin-bottom: 10px; } /* extra spacing */
     #homeButton:hover { background: #5a6268; }
     .feedback { margin-top: 6px; }
     .feedback button {
@@ -223,94 +223,94 @@
         const faqs = await res.json();
         addMessage("📋 Here are all available FAQs (click a question to see the answer):", "bot", "General");
 
-        faqs.forEach(faq => {
-  const msg = document.createElement("div");
-  msg.className = "message bot";
-  msg.innerHTML = `
-    👉 <span style="cursor:pointer; color:#007bff; text-decoration:underline;" 
-         onclick="sendFAQ('${faq.question}')">${faq.question}</span>
-    <span class="timestamp">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-  `;
-  document.getElementById("messages").appendChild(msg);
-});
+               faqs.forEach(faq => {
+          const msg = document.createElement("div");
+          msg.className = "message bot";
+          msg.innerHTML = `
+            👉 <span style="cursor:pointer; color:#007bff; text-decoration:underline;" 
+                 onclick="sendFAQ('${faq.question}')">${faq.question}</span>
+            <span class="timestamp">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          `;
+          document.getElementById("messages").appendChild(msg);
+        });
 
-document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
-} catch (err) {
-  addMessage("Error loading FAQs.", "bot");
-}
-}
+        document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+      } catch (err) {
+        addMessage("Error loading FAQs.", "bot");
+      }
+    }
 
-async function sendFAQ(question) {
-  addMessage(question, "user");
-  try {
-    showTyping();
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question })
+    async function sendFAQ(question) {
+      addMessage(question, "user");
+      try {
+        showTyping();
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+        const data = await res.json();
+        hideTyping();
+        addMessage(data.answer || "Sorry, I couldn't find an answer.", "bot", data.category, true);
+      } catch (err) {
+        hideTyping();
+        addMessage("Error connecting to server.", "bot");
+      }
+    }
+
+    function resetChat() {
+      const messages = document.getElementById("messages");
+      messages.innerHTML = ""; // clear all messages
+      addMessage(
+        "👋 Hi, I’m your FAQ assistant. I can answer questions from our FAQ list. Click 'View All FAQs' to see them.",
+        "bot",
+        "General"
+      );
+    }
+
+    // Handle feedback clicks
+    function sendFeedback(response, answerText) {
+      console.log("Feedback received:", response, "for answer:", answerText);
+      addMessage(`✅ Thanks for your feedback: "${response}"`, "bot", "General");
+
+      // OPTIONAL: Send feedback to backend
+      // fetch("/feedback", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ feedback: response, answer: answerText })
+      // })
+      // .then(res => res.json())
+      // .then(data => console.log("Feedback saved:", data))
+      // .catch(err => console.error("Error saving feedback:", err));
+    }
+
+    // Typing indicator
+    function showTyping() {
+      const typing = document.createElement("div");
+      typing.className = "message bot";
+      typing.id = "typing";
+      typing.innerHTML = "💬 Typing...";
+      document.getElementById("messages").appendChild(typing);
+    }
+
+    function hideTyping() {
+      const typing = document.getElementById("typing");
+      if (typing) typing.remove();
+    }
+
+    // Allow pressing Enter to send
+    document.getElementById("question").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendQuestion();
     });
-    const data = await res.json();
-    hideTyping();
-    addMessage(data.answer || "Sorry, I couldn't find an answer.", "bot", data.category, true);
-  } catch (err) {
-    hideTyping();
-    addMessage("Error connecting to server.", "bot");
-  }
-}
 
-function resetChat() {
-  const messages = document.getElementById("messages");
-  messages.innerHTML = ""; // clear all messages
-  addMessage(
-    "👋 Hi, I’m your FAQ assistant. I can answer questions from our FAQ list. Click 'View All FAQs' to see them.",
-    "bot",
-    "General"
-  );
-}
-
-// Handle feedback clicks
-function sendFeedback(response, answerText) {
-  console.log("Feedback received:", response, "for answer:", answerText);
-  addMessage(`✅ Thanks for your feedback: "${response}"`, "bot", "General");
-
-  // OPTIONAL: Send feedback to backend
-  // fetch("/feedback", {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ feedback: response, answer: answerText })
-  // })
-  // .then(res => res.json())
-  // .then(data => console.log("Feedback saved:", data))
-  // .catch(err => console.error("Error saving feedback:", err));
-}
-
-// Typing indicator
-function showTyping() {
-  const typing = document.createElement("div");
-  typing.className = "message bot";
-  typing.id = "typing";
-  typing.innerHTML = "💬 Typing...";
-  document.getElementById("messages").appendChild(typing);
-}
-
-function hideTyping() {
-  const typing = document.getElementById("typing");
-  if (typing) typing.remove();
-}
-
-// Allow pressing Enter to send
-document.getElementById("question").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendQuestion();
-});
-
-// Welcome message
-window.onload = () => {
-  addMessage(
-    "👋 Hi, I’m your FAQ assistant. I can answer questions from our FAQ list. Click 'View All FAQs' to see them.",
-    "bot",
-    "General"
-  );
-};
-</script>
+    // Welcome message
+    window.onload = () => {
+      addMessage(
+        "👋 Hi, I’m your FAQ assistant. I can answer questions from our FAQ list. Click 'View All FAQs' to see them.",
+        "bot",
+        "General"
+      );
+    };
+  </script>
 </body>
 </html>
